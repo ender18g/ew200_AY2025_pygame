@@ -12,7 +12,7 @@ clock = pygame.time.Clock()
 running = True
 
 # BUILD THE BACKGROUND WITH TILES
-background = pygame.Surface((WIDTH,HEIGHT))
+background = pygame.Surface((WIDTH*2,HEIGHT))
 background.fill((255,0,0))
 
 # load tile images to variables
@@ -24,7 +24,7 @@ shoreline = pygame.image.load('assets/Tiles/tile_25.png') # tile_25
 TILE_SIZE = water.get_width()
 
 # loop over x direction
-for x in range(0,WIDTH,TILE_SIZE):
+for x in range(0,WIDTH*2,TILE_SIZE):
     # loop over y direction
     for y in range(0,HEIGHT, TILE_SIZE):
         # blit the tile to our BG
@@ -34,14 +34,7 @@ for x in range(0,WIDTH,TILE_SIZE):
         elif x<(2*TILE_SIZE):
             background.blit(shoreline, (x,y))
 
-
-
-
-
-
-
-
-
+i = 0
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -50,7 +43,9 @@ while running:
             running = False
 
     # Blit the background to the screen
-    screen.blit(background,(0,0))
+    screen.blit(background,(i,0))
+
+    i-=1
 
     # flip() the display to put your work on screen
     pygame.display.flip()
