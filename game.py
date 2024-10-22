@@ -1,12 +1,35 @@
 # Example file showing a basic pygame "game loop"
 import pygame
 
-
 # pygame setup
 pygame.init()
-screen = pygame.display.set_mode((800, 600))
+
+WIDTH = 1280
+HEIGHT = 720
+
+screen = pygame.display.set_mode((WIDTH,HEIGHT))
 clock = pygame.time.Clock()
 running = True
+
+# BUILD THE BACKGROUND WITH TILES
+background = pygame.Surface((WIDTH,HEIGHT))
+background.fill((50,50,50))
+
+# load tile images to variables
+
+
+# loop over x direction
+
+# loop over y direction
+
+# blit the tile to our BG
+
+
+
+
+
+
+
 
 while running:
     # poll for events
@@ -15,10 +38,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill("purple")
-
-    # RENDER YOUR GAME HERE
+    # Blit the background to the screen
+    screen.blit(background,(0,0))
 
     # flip() the display to put your work on screen
     pygame.display.flip()
