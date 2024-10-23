@@ -1,5 +1,7 @@
 # Example file showing a basic pygame "game loop"
 import pygame
+from helpers import build_background
+from ship import Ship
 
 # pygame setup
 pygame.init()
@@ -11,41 +13,40 @@ screen = pygame.display.set_mode((WIDTH,HEIGHT))
 clock = pygame.time.Clock()
 running = True
 
-# BUILD THE BACKGROUND WITH TILES
-background = pygame.Surface((WIDTH*2,HEIGHT))
-background.fill((255,0,0))
+# get my background
+background = build_background(WIDTH,HEIGHT)
 
-# load tile images to variables
-grass = pygame.image.load('assets/Tiles/tile_39.png')     # tile_39
-water = pygame.image.load('assets/Tiles/tile_73.png')     # tile_73
-shoreline = pygame.image.load('assets/Tiles/tile_25.png') # tile_25
+# make a ship 
+player1 = Ship(200,200)
 
-# get to the tile_size
-TILE_SIZE = water.get_width()
 
-# loop over x direction
-for x in range(0,WIDTH*2,TILE_SIZE):
-    # loop over y direction
-    for y in range(0,HEIGHT, TILE_SIZE):
-        # blit the tile to our BG
-        background.blit(water, (x,y))
-        if x<TILE_SIZE:
-            background.blit(grass, (x,y))
-        elif x<(2*TILE_SIZE):
-            background.blit(shoreline, (x,y))
-
-i = 0
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            k = pygame.key.name(event.key)
+            # check if k is right, left, up down
+            if k == 'right':
+                player1.theta -= 1
+            elif k == 'left':
+                player1.theta += 1
+            elif k == 'up':
+                player1.speed += 1
+            elif k == 'down':
+                player1.speed -= 1
+
+    # update the ships position
+    player1.update()
 
     # Blit the background to the screen
-    screen.blit(background,(i,0))
+    screen.blit(background,(0,0))
 
-    i-=1
+    # draw the ship
+    player1.draw(screen)
+
 
     # flip() the display to put your work on screen
     pygame.display.flip()
