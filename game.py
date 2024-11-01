@@ -17,8 +17,7 @@ running = True
 background = build_background(WIDTH,HEIGHT)
 
 # make a ship 
-player1 = Ship(200,200)
-
+player1 = Ship(200,200, WIDTH, HEIGHT)
 
 while running:
     # poll for events
@@ -26,17 +25,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.KEYDOWN:
-            k = pygame.key.name(event.key)
-            # check if k is right, left, up down
-            if k == 'right':
-                player1.theta -= 1
-            elif k == 'left':
-                player1.theta += 1
-            elif k == 'up':
-                player1.speed += 1
-            elif k == 'down':
-                player1.speed -= 1
 
     # update the ships position
     player1.update()
