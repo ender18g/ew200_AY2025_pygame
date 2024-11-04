@@ -1,14 +1,21 @@
 from math import cos, sin, pi
 import pygame
 
-class Ship():
+class Ship(pygame.sprite.Sprite):
     def __init__(self, x, y, WIDTH, HEIGHT, theta=270, color='red'):
+        pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
         self.speed = 0
         self.theta = theta # degrees
-        self.image = pygame.image.load('assets/Ships/ship (3).png')
+        self.color = color
+        if color == 'red':
+            self.orig_image = pygame.image.load('assets/Ships/ship (3).png')
+        else:
+            self.orig_image = pygame.image.load('assets/Ships/ship (2).png')
+        self.image = self.orig_image # keep orig image to never be rotated
         self.rect = self.image.get_rect()
+        self.rect.center = (self.x, self.y)
         self.screen_w = WIDTH
         self.screen_h = HEIGHT
 
@@ -37,8 +44,10 @@ class Ship():
         if c_x > self.screen_w or c_x < (0+128*2) or c_y<0 or c_y>self.screen_h:
             self.speed = 0
 
-    def update(self):    
-        self.check_keys()   
+    def update(self):
+        if self.color =='red':   
+            self.check_keys() # only red if influenced by keys
+          
         # get x and y components of speed
         theta_rad = self.deg_to_rad(self.theta)
         x_dot = cos(theta_rad) * self.speed
@@ -47,16 +56,8 @@ class Ship():
         self.x += x_dot
         self.y -= y_dot
 
+        # now rotate the image and drew new rect
+        self.image = pygame.transform.rotozoom(self.orig_image, self.theta - 270, 0.7)
+        self.rect = self.image.get_rect(center = (self.x, self.y))
+
         self.check_border()
-
-    
-    def draw(self, screen):
-        # rotate our image
-        new_image = pygame.transform.rotozoom(self.image, self.theta - 270, 0.7)
-        # update the rectangle W,H
-        self.rect = new_image.get_rect()
-        # update our rectangle X,Y
-        self.rect.center = (self.x, self.y)
-        print(self.rect)
-
-        screen.blit(new_image, self.rect.center)
