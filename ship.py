@@ -1,8 +1,9 @@
 from math import cos, sin, pi
 import pygame
+from bullet import Bullet
 
 class Ship(pygame.sprite.Sprite):
-    def __init__(self, x, y, WIDTH, HEIGHT, theta=270, color='red'):
+    def __init__(self, x, y, WIDTH, HEIGHT, bullet_group, theta=270, color='red'):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
@@ -18,6 +19,9 @@ class Ship(pygame.sprite.Sprite):
         self.rect.center = (self.x, self.y)
         self.screen_w = WIDTH
         self.screen_h = HEIGHT
+        self.max_speed = 5
+        self.reverse_time = pygame.time.get_ticks()
+        self.bullet_group = bullet_group
 
     def deg_to_rad(self, deg):
         # converts deg to rad
@@ -37,16 +41,39 @@ class Ship(pygame.sprite.Sprite):
             self.theta += 1
         if keys[pygame.K_d]:
             self.theta -= 1
+        
+        # check for space bar to shoot
+        if keys[pygame.K_SPACE]:
+            self.shoot()
     
     def check_border(self):
-        c_x, c_y = self.rect.center
-        # check the border, and set to 0 if we hit the border
-        if c_x > self.screen_w or c_x < (0+128*2) or c_y<0 or c_y>self.screen_h:
-            self.speed = 0
+        # make sure our ship rect is inside of some rect we set
+        border_rect = pygame.rect.Rect(0,0,self.screen_w, self.screen_h)
+        #if the ships rectangle leaves border, then set speed to 0
+        if not border_rect.contains(self.rect):
+            # only reverse if its been >500ms from last time
+            if pygame.time.get_ticks() - self.reverse_time > 500:
+                self.speed = -0.2 *self.speed
+                #self.theta -=90
+                # rese the timer
+                self.reverse_time = pygame.time.get_ticks()
+ 
+    def shoot(self):
+        # make a bullet instance
+        b = Bullet(self.x, self.y, self.theta)
+        # put the bullet in a group
+        self.bullet_group.add(b)
+
 
     def update(self):
         if self.color =='red':   
             self.check_keys() # only red if influenced by keys
+        
+        # check and make sure we are moving too fast
+        if self.speed > self.max_speed:
+            self.speed = self.max_speed 
+        elif self.speed < -self.max_speed:
+            self.speed = -self.max_speed
           
         # get x and y components of speed
         theta_rad = self.deg_to_rad(self.theta)

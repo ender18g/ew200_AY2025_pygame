@@ -16,12 +16,13 @@ running = True
 # get my background
 background = build_background(WIDTH,HEIGHT)
 
-# make a ship 
-player1 = Ship(500,200, WIDTH, HEIGHT)
-enemy1 = Ship(400,400, WIDTH, HEIGHT, color='gray')
-
 # make a sprite group
 ship_group = pygame.sprite.Group()
+bullet_group = pygame.sprite.Group()
+
+# make a ship 
+player1 = Ship(500,200, WIDTH, HEIGHT, bullet_group)
+enemy1 = Ship(400,400, WIDTH, HEIGHT, bullet_group, color='gray')
 
 # add our sprite to the sprite group
 ship_group.add(player1)
@@ -36,6 +37,7 @@ while running:
 
     # update the ships position
     ship_group.update()
+    bullet_group.update()
 
     # check for collision
     has_collided = pygame.sprite.collide_rect(player1,enemy1)
@@ -48,6 +50,7 @@ while running:
 
     # draw the ship
     ship_group.draw(screen)
+    bullet_group.draw(screen)
 
 
     # flip() the display to put your work on screen
