@@ -21,11 +21,11 @@ ship_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
 
 # make a ship 
-player1 = Ship(500,200, WIDTH, HEIGHT, bullet_group)
-enemy1 = Ship(400,400, WIDTH, HEIGHT, bullet_group, color='gray')
+player1 = Ship(screen,500,200, WIDTH, HEIGHT, bullet_group)
+enemy1 = Ship(screen, 400,400, WIDTH, HEIGHT, bullet_group, color='gray')
 
 # add our sprite to the sprite group
-ship_group.add(player1)
+ship_group.add(player1) 
 ship_group.add(enemy1)
 
 while running:
@@ -41,6 +41,7 @@ while running:
 
     # check for collision
     has_collided = pygame.sprite.collide_rect(player1,enemy1)
+
     
     if has_collided:
         player1.kill()
@@ -51,6 +52,21 @@ while running:
     # draw the ship
     ship_group.draw(screen)
     bullet_group.draw(screen)
+
+    # check for bullets hitting ships
+    coll_dict = pygame.sprite.groupcollide(ship_group,bullet_group,0,0)
+
+    # check and see if a bullet collides with something that is not its mother\
+    for s,bs in coll_dict.items():
+        # ship is k, bullet list is v
+        # check for non empty values
+        if bs:
+            #loop over each bullet check its mom
+            for b in bs:
+                # check if bullet.mom is the ship
+                if b.mom != s:
+                    # kill the ship
+                    s.kill()
 
 
     # flip() the display to put your work on screen

@@ -1,9 +1,9 @@
-from math import cos, sin, pi
+from math import cos, sin, pi, radians
 import pygame
 from bullet import Bullet
 
 class Ship(pygame.sprite.Sprite):
-    def __init__(self, x, y, WIDTH, HEIGHT, bullet_group, theta=270, color='red'):
+    def __init__(self, screen, x, y, WIDTH, HEIGHT, bullet_group, theta=270, color='red'):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
@@ -16,12 +16,15 @@ class Ship(pygame.sprite.Sprite):
             self.orig_image = pygame.image.load('assets/Ships/ship (2).png')
         self.image = self.orig_image # keep orig image to never be rotated
         self.rect = self.image.get_rect()
+        self.length = self.rect.height + 5
         self.rect.center = (self.x, self.y)
         self.screen_w = WIDTH
         self.screen_h = HEIGHT
         self.max_speed = 5
         self.reverse_time = pygame.time.get_ticks()
         self.bullet_group = bullet_group
+        self.screen = screen
+
 
     def deg_to_rad(self, deg):
         # converts deg to rad
@@ -59,8 +62,9 @@ class Ship(pygame.sprite.Sprite):
                 self.reverse_time = pygame.time.get_ticks()
  
     def shoot(self):
+
         # make a bullet instance
-        b = Bullet(self.x, self.y, self.theta)
+        b = Bullet(self.screen, self, self.x, self.y, self.theta)
         # put the bullet in a group
         self.bullet_group.add(b)
 
