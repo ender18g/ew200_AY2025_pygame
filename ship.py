@@ -24,6 +24,8 @@ class Ship(pygame.sprite.Sprite):
         self.reverse_time = pygame.time.get_ticks()
         self.bullet_group = bullet_group
         self.screen = screen
+        self.shoot_time = 0 # this is to prevent continuous shooting
+        self.shoot_wait = 500 # wait ms before next shot
 
 
     def deg_to_rad(self, deg):
@@ -62,11 +64,13 @@ class Ship(pygame.sprite.Sprite):
                 self.reverse_time = pygame.time.get_ticks()
  
     def shoot(self):
-
-        # make a bullet instance
-        b = Bullet(self.screen, self, self.x, self.y, self.theta)
-        # put the bullet in a group
-        self.bullet_group.add(b)
+        # only shoot if the time has elapsed
+        if pygame.time.get_ticks() - self.shoot_time > self.shoot_wait:
+            self.shoot_time = pygame.time.get_ticks()
+            # if we have waited long enough, then make bullet
+            b = Bullet(self.screen, self, self.x, self.y, self.theta)
+            # put the bullet in a group
+            self.bullet_group.add(b)
 
 
     def update(self):
