@@ -26,3 +26,19 @@ def build_background(WIDTH,HEIGHT):
 
     # return my bg
     return background
+
+def kill_ships(ship_group, bullet_group):
+        # check for bullets hitting ships
+    coll_dict = pygame.sprite.groupcollide(ship_group,bullet_group,0,0)
+
+    # check and see if a bullet collides with something that is not its mother\
+    for s,bs in coll_dict.items():
+        # ship is k, bullet list is v
+        # check for non empty values
+        if bs:
+            #loop over each bullet check its mom
+            for b in bs:
+                # check if bullet.mom is the ship
+                if b.mom != s:
+                    # kill the ship
+                    s.kill()

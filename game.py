@@ -1,6 +1,6 @@
 # Example file showing a basic pygame "game loop"
 import pygame
-from helpers import build_background
+from helpers import build_background, kill_ships
 from ship import Ship
 
 # pygame setup
@@ -53,21 +53,8 @@ while running:
     ship_group.draw(screen)
     bullet_group.draw(screen)
 
-    # check for bullets hitting ships
-    coll_dict = pygame.sprite.groupcollide(ship_group,bullet_group,0,0)
-
-    # check and see if a bullet collides with something that is not its mother\
-    for s,bs in coll_dict.items():
-        # ship is k, bullet list is v
-        # check for non empty values
-        if bs:
-            #loop over each bullet check its mom
-            for b in bs:
-                # check if bullet.mom is the ship
-                if b.mom != s:
-                    # kill the ship
-                    s.kill()
-
+    # check for ship collision kill them
+    kill_ships(ship_group, bullet_group)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
