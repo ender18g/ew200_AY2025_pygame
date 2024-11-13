@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 
 def build_background(WIDTH,HEIGHT):
     # BUILD THE BACKGROUND WITH TILES
@@ -9,6 +10,7 @@ def build_background(WIDTH,HEIGHT):
     grass = pygame.image.load('assets/Tiles/tile_39.png')     # tile_39
     water = pygame.image.load('assets/Tiles/tile_73.png')     # tile_73
     shoreline = pygame.image.load('assets/Tiles/tile_25.png') # tile_25
+    rock = pygame.image.load('assets/Tiles/tile_50.png') # tile_50
 
     # get to the tile_size
     TILE_SIZE = water.get_width()
@@ -23,6 +25,16 @@ def build_background(WIDTH,HEIGHT):
                 background.blit(grass, (x,y))
             elif x<(2*TILE_SIZE):
                 background.blit(shoreline, (x,y))
+    
+    # add some random rocks
+    num_rocks = 3
+    # loop over num rocks
+    for i in range(num_rocks):
+        # generate coords
+        coords = (randint(0, WIDTH), randint(0,HEIGHT))
+        # blit the rock on the bg
+        background.blit(rock, coords)
+
 
     # return my bg
     return background

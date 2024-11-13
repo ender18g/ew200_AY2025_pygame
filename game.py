@@ -67,14 +67,25 @@ while running:
         player1.kill()
 
      # make the bg a bit darker
-    background.set_alpha(bg_alpha)
-    title_surface.set_alpha(255-0.4*bg_alpha)
+    #background.set_alpha(bg_alpha)
+    
+    title_surface.set_alpha(255 * 2 - bg_alpha)
     bg_alpha +=1
 
 
     # Blit the background to the screen
     screen.fill((0,0,0))
     screen.blit(background,(0,0))
+
+    # get the color at an xy position on the screen
+    r,g,b,_ = screen.get_at(player1.rect.center)
+    
+    # check the r g and b to see if we are on water
+    if r in range(170,181) and g in range(220,241) and b in range(240,256):
+        pass
+    else:
+        player1.kill()
+
 
     # draw text
     screen.blit(title_surface, title_rect)
