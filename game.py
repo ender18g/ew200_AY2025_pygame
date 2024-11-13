@@ -64,7 +64,7 @@ while running:
 
     
     if has_collided:
-        player1.kill()
+        player1.explode
 
      # make the bg a bit darker
     #background.set_alpha(bg_alpha)
@@ -84,7 +84,7 @@ while running:
     if r in range(170,181) and g in range(220,241) and b in range(240,256):
         pass
     else:
-        player1.kill()
+        player1.explode()
 
 
     # draw text

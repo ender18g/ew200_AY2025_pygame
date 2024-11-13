@@ -26,6 +26,12 @@ class Ship(pygame.sprite.Sprite):
         self.screen = screen
         self.shoot_time = 0 # this is to prevent continuous shooting
         self.shoot_wait = 500 # wait ms before next shot
+        # load up explosion images
+        self.explosion_image = pygame.image.load('assets/Effects/explosion1.png')
+        self.explosion_image = pygame.transform.scale_by(self.explosion_image, 6)
+        self.explosion_timer = 0
+        self.explosion_length = 500
+
 
 
     def deg_to_rad(self, deg):
@@ -71,7 +77,14 @@ class Ship(pygame.sprite.Sprite):
             b = Bullet(self.screen, self, self.x, self.y, self.theta)
             # put the bullet in a group
             self.bullet_group.add(b)
-
+    
+    def explode(self):
+        # if the timer is already set, do nothing
+        if self.explosion_timer ==0:
+            # start a timer so that it gets killed later
+            self.explosion_timer = pygame.time.get_ticks()
+            print("explosion timer set!")
+            self.speed = 0
 
     def update(self):
         if self.color =='red':   
@@ -96,3 +109,22 @@ class Ship(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center = (self.x, self.y))
 
         self.check_border()
+
+        # check on the explosion status
+        if self.explosion_timer != 0:
+            delta_time = pygame.time.get_ticks() - self.explosion_timer
+            # if we have reached kill time, kill the ship
+            if delta_time >= self.explosion_length:
+                print("killing ship")
+                self.kill()
+            # ship is in explosion sequence
+            # grow the ship based on time
+            if delta_time < (self.explosion_length/2):
+                # grow the explosion
+                self.orig_image = pygame.transform.scale_by(self.explosion_image, delta_time/1000)
+            else:
+                # shrink the explosion
+                self.orig_image = pygame.transform.scale_by(self.explosion_image, self.explosion_length/1000 - delta_time/1000)
+
+
+
