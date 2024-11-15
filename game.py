@@ -2,6 +2,7 @@
 import pygame
 from helpers import build_background, kill_ships
 from ship import Ship
+from enemy_ship import EnemyShip
 
 # make some colors
 light_blue = pygame.Color('#A2D6F9')
@@ -29,7 +30,7 @@ bullet_group = pygame.sprite.Group()
 
 # make a ship 
 player1 = Ship(screen,500,200, WIDTH, HEIGHT, bullet_group)
-enemy1 = Ship(screen, 400,400, WIDTH, HEIGHT, bullet_group, color='gray')
+enemy1 = EnemyShip(player1, screen, 400,400, WIDTH, HEIGHT, bullet_group, color='gray')
 
 # add our sprite to the sprite group
 ship_group.add(player1) 
@@ -61,10 +62,8 @@ while running:
 
     # check for collision
     has_collided = pygame.sprite.collide_rect(player1,enemy1)
-
-    
     if has_collided:
-        player1.explode
+        player1.explode()
 
      # make the bg a bit darker
     #background.set_alpha(bg_alpha)

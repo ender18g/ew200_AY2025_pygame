@@ -33,7 +33,6 @@ class Ship(pygame.sprite.Sprite):
         self.explosion_length = 500
 
 
-
     def deg_to_rad(self, deg):
         # converts deg to rad
         rad = (deg/180) * pi
@@ -86,9 +85,15 @@ class Ship(pygame.sprite.Sprite):
             print("explosion timer set!")
             self.speed = 0
 
+    def track_player(self):
+        # This code is in my enemy ship class
+        pass
+
     def update(self):
         if self.color =='red':   
             self.check_keys() # only red if influenced by keys
+        else:
+            self.track_player()
         
         # check and make sure we are moving too fast
         if self.speed > self.max_speed:
@@ -124,7 +129,7 @@ class Ship(pygame.sprite.Sprite):
                 self.orig_image = pygame.transform.scale_by(self.explosion_image, delta_time/1000)
             else:
                 # shrink the explosion
-                self.orig_image = pygame.transform.scale_by(self.explosion_image, self.explosion_length/1000 - delta_time/1000)
+                self.orig_image = pygame.transform.scale_by(self.explosion_image, self.explosion_length/1000 - (delta_time - self.explosion_length/2)/1000)
 
 
 
