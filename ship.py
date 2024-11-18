@@ -32,6 +32,9 @@ class Ship(pygame.sprite.Sprite):
         self.explosion_timer = 0
         self.explosion_length = 500
 
+        # load some sounds
+        self.shoot_sound = pygame.mixer.Sound('assets/Audio/impactPlank_medium_003.ogg')
+
 
     def deg_to_rad(self, deg):
         # converts deg to rad
@@ -71,6 +74,8 @@ class Ship(pygame.sprite.Sprite):
     def shoot(self):
         # only shoot if the time has elapsed
         if pygame.time.get_ticks() - self.shoot_time > self.shoot_wait:
+            # we are allowed to shoot now
+            self.shoot_sound.play()
             self.shoot_time = pygame.time.get_ticks()
             # if we have waited long enough, then make bullet
             b = Bullet(self.screen, self, self.x, self.y, self.theta)

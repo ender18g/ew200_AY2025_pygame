@@ -13,6 +13,14 @@ violet = pygame.Color('#6D597A')
 
 # pygame setup
 pygame.init()
+pygame.mixer.init()
+
+# load background music
+bg_music = pygame.mixer.Sound('assets/Steel_jingles/jingles_STEEL01.ogg')
+bg_music.play(-1)
+
+
+
 
 WIDTH = 1280
 HEIGHT = 720
