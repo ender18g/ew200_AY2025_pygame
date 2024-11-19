@@ -3,11 +3,11 @@ import pygame
 from bullet import Bullet
 
 class Ship(pygame.sprite.Sprite):
-    def __init__(self, screen, x, y, WIDTH, HEIGHT, bullet_group, theta=270, color='red'):
+    def __init__(self, screen, x, y, speed, WIDTH, HEIGHT, bullet_group, theta=270, color='red'):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
-        self.speed = 0
+        self.speed = speed
         self.theta = theta # degrees
         self.color = color
         if color == 'red':
@@ -31,6 +31,7 @@ class Ship(pygame.sprite.Sprite):
         self.explosion_image = pygame.transform.scale_by(self.explosion_image, 6)
         self.explosion_timer = 0
         self.explosion_length = 500
+        self.mask = pygame.mask.from_surface(self.image)
 
         # load some sounds
         self.shoot_sound = pygame.mixer.Sound('assets/Audio/impactPlank_medium_003.ogg')
@@ -60,6 +61,8 @@ class Ship(pygame.sprite.Sprite):
             self.shoot()
     
     def check_border(self):
+        if self.color != 'red':
+            return
         # make sure our ship rect is inside of some rect we set
         border_rect = pygame.rect.Rect(0,0,self.screen_w, self.screen_h)
         #if the ships rectangle leaves border, then set speed to 0
@@ -117,6 +120,8 @@ class Ship(pygame.sprite.Sprite):
         # now rotate the image and drew new rect
         self.image = pygame.transform.rotozoom(self.orig_image, self.theta - 270, 0.7)
         self.rect = self.image.get_rect(center = (self.x, self.y))
+
+        self.mask = pygame.mask.from_surface(self.image)
 
         self.check_border()
 

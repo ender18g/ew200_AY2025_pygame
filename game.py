@@ -3,6 +3,7 @@ import pygame
 from helpers import build_background, kill_ships
 from ship import Ship
 from enemy_ship import EnemyShip
+from random import randint
 
 # make some colors
 light_blue = pygame.Color('#A2D6F9')
@@ -17,7 +18,7 @@ pygame.mixer.init()
 
 # load background music
 bg_music = pygame.mixer.Sound('assets/Steel_jingles/jingles_STEEL01.ogg')
-bg_music.play(-1)
+#bg_music.play(-1)
 
 
 
@@ -33,16 +34,44 @@ running = True
 background = build_background(WIDTH,HEIGHT)
 
 # make a sprite group
-ship_group = pygame.sprite.Group()
+player_group = pygame.sprite.Group()
+enemy_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
+all_ships_group = pygame.sprite.Group()
 
 # make a ship 
-player1 = Ship(screen,500,200, WIDTH, HEIGHT, bullet_group)
-enemy1 = EnemyShip(player1, screen, 400,400, WIDTH, HEIGHT, bullet_group, color='gray')
+player1 = Ship(screen,500,200,0, WIDTH, HEIGHT, bullet_group)
+player_group.add(player1) 
+
+
+def spawn_ships(WIDTH, HEIGHT, num_ships, enemy_group):
+    # check the number of ships, and spawn more as needed
+    # get the number of ships right now
+    n = len(enemy_group)
+    for i in range(n, num_ships[0]):
+        x = randint(128, WIDTH)
+        y = randint(0, HEIGHT)
+        speed = randint(1, 5)
+        enemy = EnemyShip(player1, screen, x,y, speed,  WIDTH, HEIGHT, bullet_group, color='gray')
+        enemy_group.add(enemy)
+
+def check_ship_collide(player1, num_ships, score, all_ships_group):
+    # loop over ALL ships and check for collision
+    for si in all_ships_group:
+        for sj in all_ships_group:
+            if si==sj:
+                continue
+            if pygame.sprite.collide_mask(si,sj):
+                if player1 != si:
+                    si.explode()
+                if player1 != sj:
+                    sj.explode()       
 
 # add our sprite to the sprite group
-ship_group.add(player1) 
-ship_group.add(enemy1)
+
+num_ships = [1]
+
+spawn_ships(WIDTH, HEIGHT, num_ships, enemy_group)
 
 # make font
 title_font = pygame.font.Font('assets/fonts/Kranky-Regular.ttf',size=80)
@@ -56,6 +85,9 @@ title_rect.center = (WIDTH//2, HEIGHT//2)
 bg_alpha = 0
 show_title = 1 # boolean to say if title should be blit
 
+# make a score
+score = [0]
+score_font = pygame.font.Font('assets/fonts/Kranky-Regular.ttf',size=55)
 
 while running:
     # poll for events
@@ -64,14 +96,20 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+
+    spawn_ships(WIDTH, HEIGHT, num_ships, enemy_group)
+    all_ships_group.add(player_group)
+    all_ships_group.add(enemy_group)
+
+
     # update the ships position
-    ship_group.update()
+    enemy_group.update()
+    player_group.update()
     bullet_group.update()
 
+
     # check for collision
-    has_collided = pygame.sprite.collide_rect(player1,enemy1)
-    if has_collided:
-        player1.explode()
+    check_ship_collide(player1,num_ships, score, all_ships_group)
 
      # make the bg a bit darker
     #background.set_alpha(bg_alpha)
@@ -96,13 +134,19 @@ while running:
 
     # draw text
     screen.blit(title_surface, title_rect)
+    score_text = f"Score: {score[0]}"
+    score_surface = score_font.render(score_text,1, violet)
+    score_rect = score_surface.get_rect()
+    score_rect.topleft = (0,0)
+    screen.blit(score_surface, score_rect)
 
     # draw the ship
-    ship_group.draw(screen)
+    enemy_group.draw(screen)
+    player_group.draw(screen)
     bullet_group.draw(screen)
 
     # check for ship collision kill them
-    kill_ships(ship_group, bullet_group)
+    kill_ships(enemy_group, bullet_group, score,  num_ships)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
