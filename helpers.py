@@ -60,3 +60,4 @@ def kill_ships(ship_group, bullet_group, score, num_ships):
                     # increase the number of spawned ships by chance
                     if randint(0,10)<3:
                         num_ships[0]+=1
+

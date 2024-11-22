@@ -4,6 +4,7 @@ from helpers import build_background, kill_ships
 from ship import Ship
 from enemy_ship import EnemyShip
 from random import randint
+from datetime import datetime
 
 # make some colors
 light_blue = pygame.Color('#A2D6F9')
@@ -11,6 +12,7 @@ imp_red = pygame.Color('#F8333C')
 y_blue = pygame.Color('#355070')
 orange = pygame.Color('#FCAB10')
 violet = pygame.Color('#6D597A')
+black = (0,0,0)
 
 # pygame setup
 pygame.init()
@@ -20,8 +22,6 @@ pygame.mixer.init()
 bg_music = pygame.mixer.Sound('assets/mp3/info_flow.mp3')
 bg_music.set_volume(0.5)
 bg_music.play(-1)
-
-
 
 
 WIDTH = 1280
@@ -68,8 +68,6 @@ def check_ship_collide(player1, num_ships, score, all_ships_group):
                 if player1 != sj:
                     sj.explode()     
 
-from datetime import datetime
-
 def take_screenshot(screen):
     print("TAKING SCREENSHOT")
     fn = datetime.now().strftime('%d_%m_%y_%H%M%S.png')
@@ -99,6 +97,53 @@ show_title = 1 # boolean to say if title should be blit
 score = [0]
 score_font = pygame.font.Font('assets/fonts/Kranky-Regular.ttf',size=55)
 
+### INSTRUCTION LOOP ###############################
+
+def make_instructions(screen):
+    # black screen
+    screen.fill(black)
+
+    instructions = [
+        'Use W, A, S, D to move your ship',
+        'Press Spacebar to shoot your cannon',
+        'Press P to take a screenshot',
+        '',
+        '**Press any Key To Play**'
+    ]
+
+    # make an instruction font
+    i_font = pygame.font.Font('assets/fonts/Kranky-Regular.ttf',size=40)
+    spacing = 80
+    # render (make surface) for each instruction
+    for ii in range(len(instructions)):
+        # render the font
+        font_surf = i_font.render(instructions[ii], True, light_blue)
+        # get a rect
+        font_rect = font_surf.get_rect()
+        font_rect.center = (WIDTH//2, spacing + ii * spacing)
+        # blit it to the screen
+        screen.blit(font_surf, font_rect)
+
+
+waiting = 1
+# if we see the spacebar, exit the loop (break)
+while waiting:
+    # pygame.QUIT event means the user clicked X to close your window
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+            waiting = 0
+        if event.type == pygame.KEYDOWN:
+            # if any key pressed, break
+            waiting = 0
+    
+    make_instructions(screen)
+
+    pygame.display.flip()
+
+
+
+### MAIN GAME LOOP  ##################################
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
