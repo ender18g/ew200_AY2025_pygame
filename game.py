@@ -17,8 +17,9 @@ pygame.init()
 pygame.mixer.init()
 
 # load background music
-bg_music = pygame.mixer.Sound('assets/Steel_jingles/jingles_STEEL01.ogg')
-#bg_music.play(-1)
+bg_music = pygame.mixer.Sound('assets/mp3/info_flow.mp3')
+bg_music.set_volume(0.5)
+bg_music.play(-1)
 
 
 

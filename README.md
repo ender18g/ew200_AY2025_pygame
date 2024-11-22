@@ -1,5 +1,15 @@
-# ew200_AY2025_pygame
- 
-## This is a project for my EW200 class
+# Life's a Beach
 
-### It involves a ship and cannons
+## Screenshots
+
+## Installation
+1. Install pygame `pip3 install pygame`
+2. Clone this repository
+3. Run the `game.py`, `python3 game.py`
+
+## Game Play Instructions
+1. Use the `w` `a` `s` `d` keys to move the ship
+2. Press `spacebar` to shoot the cannon
+
+
+
