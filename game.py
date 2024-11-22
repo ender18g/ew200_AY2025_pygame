@@ -66,7 +66,16 @@ def check_ship_collide(player1, num_ships, score, all_ships_group):
                 if player1 != si:
                     si.explode()
                 if player1 != sj:
-                    sj.explode()       
+                    sj.explode()     
+
+from datetime import datetime
+
+def take_screenshot(screen):
+    print("TAKING SCREENSHOT")
+    fn = datetime.now().strftime('%d_%m_%y_%H%M%S.png')
+    # take a screenshot
+    pygame.image.save(screen, f'screenshots/{fn}')
+  
 
 # add our sprite to the sprite group
 
@@ -96,12 +105,13 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_p:
+                take_screenshot(screen)
 
     spawn_ships(WIDTH, HEIGHT, num_ships, enemy_group)
     all_ships_group.add(player_group)
     all_ships_group.add(enemy_group)
-
 
     # update the ships position
     enemy_group.update()
@@ -117,7 +127,6 @@ while running:
     
     title_surface.set_alpha(255 * 2 - bg_alpha)
     bg_alpha +=1
-
 
     # Blit the background to the screen
     screen.fill((0,0,0))

@@ -1,6 +1,9 @@
 # Life's a Beach
 
 ## Screenshots
+![screenshot](screenshots/1.png)
+![screenshot](screenshots/22_11_24_082012.png)
+![screenshot](screenshots/22_11_24_082019.png)
 
 ## Installation
 1. Install pygame `pip3 install pygame`
