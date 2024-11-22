@@ -12,8 +12,9 @@
 2. Press `spacebar` to shoot the cannon
 
 ## To Do List
-- [] Make enemy ships shoot
-- [] Display an instruction screen
-- [] Make a Lives counter
+- [ ] Make enemy ships shoot
+- [ ] Display an instruction screen
+- [ ] Make a Lives counter
+- [x] Make enemy ships follow me
 
 
