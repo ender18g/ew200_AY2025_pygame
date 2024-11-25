@@ -73,7 +73,16 @@ class Ship(pygame.sprite.Sprite):
                 #self.theta -=90
                 # rese the timer
                 self.reverse_time = pygame.time.get_ticks()
- 
+
+    def check_rocks(self):
+        # explode if we hit a rock
+        # get the color at an xy position on the screen
+        r,g,b,_ = self.screen.get_at(self.rect.center)
+        # check the r g and b to see if we are on rock
+        hit_rock = not (r in range(170,181) and g in range(220,241) and b in range(240,256))
+        if hit_rock:
+            self.explode()
+
     def shoot(self):
         # only shoot if the time has elapsed
         if pygame.time.get_ticks() - self.shoot_time > self.shoot_wait:
@@ -86,12 +95,11 @@ class Ship(pygame.sprite.Sprite):
             self.bullet_group.add(b)
     
     def explode(self):
+        self.speed = 0 # no moving while exploding!
         # if the timer is already set, do nothing
         if self.explosion_timer ==0:
             # start a timer so that it gets killed later
             self.explosion_timer = pygame.time.get_ticks()
-            print("explosion timer set!")
-            self.speed = 0
 
     def track_player(self):
         # This code is in my enemy ship class
@@ -124,6 +132,7 @@ class Ship(pygame.sprite.Sprite):
         self.mask = pygame.mask.from_surface(self.image)
 
         self.check_border()
+
 
         # check on the explosion status
         if self.explosion_timer != 0:

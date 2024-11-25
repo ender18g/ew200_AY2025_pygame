@@ -1,18 +1,11 @@
 # Example file showing a basic pygame "game loop"
 import pygame
-from helpers import build_background, kill_ships
+from helpers import build_background, kill_ships, make_instructions, loop_instructions
 from ship import Ship
 from enemy_ship import EnemyShip
 from random import randint
-from datetime import datetime
-
-# make some colors
-light_blue = pygame.Color('#A2D6F9')
-imp_red = pygame.Color('#F8333C')
-y_blue = pygame.Color('#355070')
-orange = pygame.Color('#FCAB10')
-violet = pygame.Color('#6D597A')
-black = (0,0,0)
+from helpers import y_blue, light_blue, imp_red, orange, violet, black
+from helpers import spawn_ships, take_screenshot, check_ship_collide
 
 # pygame setup
 pygame.init()
@@ -42,48 +35,14 @@ all_ships_group = pygame.sprite.Group()
 
 # make a ship 
 player1 = Ship(screen,500,200,0, WIDTH, HEIGHT, bullet_group)
-player_group.add(player1) 
-
-
-def spawn_ships(WIDTH, HEIGHT, num_ships, enemy_group):
-    # check the number of ships, and spawn more as needed
-    # get the number of ships right now
-    n = len(enemy_group)
-    for i in range(n, num_ships[0]):
-        x = randint(128, WIDTH)
-        y = randint(0, HEIGHT)
-        speed = randint(1, 5)
-        enemy = EnemyShip(player1, screen, x,y, speed,  WIDTH, HEIGHT, bullet_group, color='gray')
-        enemy_group.add(enemy)
-
-def check_ship_collide(player1, num_ships, score, all_ships_group):
-    # loop over ALL ships and check for collision
-    for si in all_ships_group:
-        for sj in all_ships_group:
-            if si==sj:
-                continue
-            if pygame.sprite.collide_mask(si,sj):
-                if player1 != si:
-                    si.explode()
-                if player1 != sj:
-                    sj.explode()     
-
-def take_screenshot(screen):
-    print("TAKING SCREENSHOT")
-    fn = datetime.now().strftime('%d_%m_%y_%H%M%S.png')
-    # take a screenshot
-    pygame.image.save(screen, f'screenshots/{fn}')
-  
-
-# add our sprite to the sprite group
+player_group.add(player1)  
 
 num_ships = [1]
 
-spawn_ships(WIDTH, HEIGHT, num_ships, enemy_group)
+spawn_ships(WIDTH, HEIGHT, num_ships, enemy_group, player1, screen, bullet_group)
 
 # make font
 title_font = pygame.font.Font('assets/fonts/Kranky-Regular.ttf',size=80)
-
 # render a font
 title_text = "Life's A Beach"
 title_color = (0,0,255)
@@ -97,51 +56,9 @@ show_title = 1 # boolean to say if title should be blit
 score = [0]
 score_font = pygame.font.Font('assets/fonts/Kranky-Regular.ttf',size=55)
 
-### INSTRUCTION LOOP ###############################
 
-def make_instructions(screen):
-    # black screen
-    screen.fill(black)
-
-    instructions = [
-        'Use W, A, S, D to move your ship',
-        'Press Spacebar to shoot your cannon',
-        'Press P to take a screenshot',
-        '',
-        '**Press any Key To Play**'
-    ]
-
-    # make an instruction font
-    i_font = pygame.font.Font('assets/fonts/Kranky-Regular.ttf',size=40)
-    spacing = 80
-    # render (make surface) for each instruction
-    for ii in range(len(instructions)):
-        # render the font
-        font_surf = i_font.render(instructions[ii], True, light_blue)
-        # get a rect
-        font_rect = font_surf.get_rect()
-        font_rect.center = (WIDTH//2, spacing + ii * spacing)
-        # blit it to the screen
-        screen.blit(font_surf, font_rect)
-
-
-waiting = 1
-# if we see the spacebar, exit the loop (break)
-while waiting:
-    # pygame.QUIT event means the user clicked X to close your window
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-            waiting = 0
-        if event.type == pygame.KEYDOWN:
-            # if any key pressed, break
-            waiting = 0
-    
-    make_instructions(screen)
-
-    pygame.display.flip()
-
-
+# Loop the instruction screen
+running = loop_instructions(screen)
 
 ### MAIN GAME LOOP  ##################################
 while running:
@@ -154,7 +71,7 @@ while running:
             if event.key == pygame.K_p:
                 take_screenshot(screen)
 
-    spawn_ships(WIDTH, HEIGHT, num_ships, enemy_group)
+    spawn_ships(WIDTH, HEIGHT, num_ships, enemy_group, player1, screen, bullet_group)
     all_ships_group.add(player_group)
     all_ships_group.add(enemy_group)
 
@@ -177,14 +94,8 @@ while running:
     screen.fill((0,0,0))
     screen.blit(background,(0,0))
 
-    # get the color at an xy position on the screen
-    r,g,b,_ = screen.get_at(player1.rect.center)
-    
-    # check the r g and b to see if we are on water
-    if r in range(170,181) and g in range(220,241) and b in range(240,256):
-        pass
-    else:
-        player1.explode()
+    # check for rock explosions
+    [ship.check_rocks() for ship in all_ships_group]
 
 
     # draw text
