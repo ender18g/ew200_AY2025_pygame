@@ -16,6 +16,14 @@ class Bullet(pygame.sprite.Sprite):
         self.screen_rect = screen.get_rect()
         self.mom = mom
 
+    def check_rocks(self):
+        # explode if we hit a rock
+        # get the color at an xy position on the screen
+        r,g,b,_ = self.screen.get_at(self.rect.center)
+        # check the r g and b to see if we are on rock
+        hit_rock = not (r in range(170,181) and g in range(220,241) and b in range(240,256))
+        if hit_rock:
+            self.kill()
     
     def update(self):
         dx = self.speed * cos(radians(self.theta))

@@ -96,6 +96,8 @@ while running:
 
     # check for rock explosions
     [ship.check_rocks() for ship in all_ships_group]
+    # check bullets for hitting rocks
+    [bullet.check_rocks() for bullet in bullet_group]
 
 
     # draw text
